@@ -49,7 +49,9 @@ class ProductController extends Controller
             'price' => 'required|integer',
             'stock' => 'required|integer',
             'category_id' => 'required',
-            'image' => 'required|image|mimes:png,jpg,jpeg'
+            'image' => 'required|image|mimes:png,jpg,jpeg',
+            'size' => 'nullable|max:50',
+
         ]);
 
          //upload image
@@ -63,6 +65,7 @@ class ProductController extends Controller
          $product->name = $request->name;
          $product->price = (int) $request->price;
          $product->stock = (int) $request->stock;
+         $product->size = $request->size;
          $product->category_id = $request->category_id;
          $product->image = $filename;
          $product->save();
@@ -90,6 +93,7 @@ class ProductController extends Controller
 
         $product->update ([
             'name' => $request->name,
+            'size' => $request->size,
             'price' => (int) $request->price,
             'stock' => (int) $request->stock,
             'category_id' => $request->category_id,

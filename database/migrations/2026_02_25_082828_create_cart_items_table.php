@@ -1,0 +1,31 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void
+    {
+        Schema::create('cart_items', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('cart_id')->constrained('carts')->cascadeOnDelete();
+            $table->foreignId('product_id')->constrained('products')->cascadeOnDelete();
+
+            $table->unsignedInteger('qty')->default(1);
+
+            // snapshot data (biar kalau harga/size berubah, cart tetap konsisten)
+            $table->integer('price');
+            $table->string('size', 50)->nullable();
+
+            $table->timestamps();
+
+            $table->unique(['cart_id', 'product_id']); // 1 produk hanya 1 baris per cart
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('cart_items');
+    }
+};

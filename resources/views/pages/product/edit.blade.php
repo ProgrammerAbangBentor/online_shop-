@@ -76,6 +76,11 @@
                                     </div>
                                 @enderror
                             </div>
+                            <div class="mb-3">
+                                <label class="form-label">Ukuran</label>
+                                <input type="text" name="size" class="form-control" placeholder="Contoh: S / M / L / XL atau 40"
+                                        value="{{ old('size', $product->size ?? '') }}">
+                            </div>
                             <div class="form-group">
                                     <label class="form-label">Category</label>
                                     <select class="form-control selectric @error('category_id') is-invalid @enderror"

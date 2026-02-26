@@ -60,7 +60,7 @@
                                     </div>
                                 @enderror
                             </div>
-                            
+
                             <div class="form-group">
                                 <label>Stock</label>
                                 <input type="number"
@@ -73,6 +73,11 @@
                                         {{ $message }}
                                     </div>
                                 @enderror
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Ukuran</label>
+                                <input type="text" name="size" class="form-control" placeholder="Contoh: S / M / L / XL atau 40"
+                                        value="{{ old('size', $product->size ?? '') }}">
                             </div>
                                  <div class="form-group">
                                 <label class="form-label">Category</label>
