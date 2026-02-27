@@ -111,7 +111,7 @@
 
                 {{-- Dashboard --}}
                 <li class="{{ Request::is('user/dashboard') ? 'active' : '' }}">
-                    <a class="nav-link" href="{{ url('user/dashboard') }}">
+                    <a class="nav-link" href="{{ route('shop.dashboard') }}">
                         <i class="fas fa-home"></i>
                         <span>Dashboard</span>
                     </a>

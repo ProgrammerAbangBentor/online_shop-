@@ -39,6 +39,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/laporan', [ReportController::class, 'index'])
     ->name('laporan.index');
+
+    Route::get('/laporan/export/excel', [ReportController::class, 'exportExcel'])->name('laporan.export.excel');
+    Route::get('/laporan/export/pdf',   [ReportController::class, 'exportPdf'])->name('laporan.export.pdf');
 });
 
 
@@ -49,8 +52,8 @@ Route::middleware(['auth'])->group(function () {
 */
 Route::middleware(['auth'])->prefix('shop')->group(function () {
 
-    // Beranda
-    // Route::get('/dashboard', [DashboardController::class, 'index'])->name('.dashboard');
+    Route::get('/dashboard', [ProductCatalogController::class, 'dashboard'])
+        ->name('shop.dashboard');
 
     // Katalog Produk (untuk pelanggan)
     Route::get('/products', [ProductCatalogController::class, 'index'])

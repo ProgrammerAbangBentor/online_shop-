@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Exports\ReportTransactionsExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReportController extends Controller
 {
@@ -56,4 +59,65 @@ class ReportController extends Controller
             'jumlahPelanggan'
         ));
     }
+
+    // ✅ EXPORT EXCEL
+    public function exportExcel(Request $request)
+    {
+        $start = $request->start_date ?? now()->startOfMonth()->format('Y-m-d');
+        $end   = $request->end_date ?? now()->format('Y-m-d');
+
+        $filename = "laporan-penjualan_{$start}_sd_{$end}.xlsx";
+        return Excel::download(new ReportTransactionsExport($start, $end), $filename);
+    }
+
+    // ✅ EXPORT / CETAK PDF
+    public function exportPdf(Request $request)
+    {
+        $start = $request->start_date ?? now()->startOfMonth()->format('Y-m-d');
+        $end   = $request->end_date ?? now()->format('Y-m-d');
+
+        // ambil data (tanpa paginate untuk PDF)
+        $base = Transaction::query()
+            ->whereBetween('created_at', [
+                $start . ' 00:00:00',
+                $end . ' 23:59:59'
+            ]);
+
+        $transactions = (clone $base)->latest()->get();
+
+        $totalPesanan = (clone $base)->count();
+
+        $totalPendapatan = (clone $base)
+            ->whereIn('transaction_status', ['settlement', 'capture'])
+            ->sum('grand_total');
+
+        $produkTerjual = \App\Models\TransactionItem::query()
+            ->whereHas('transaction', function ($q) use ($start, $end) {
+                $q->whereBetween('created_at', [
+                    $start . ' 00:00:00',
+                    $end . ' 23:59:59'
+                ])->whereIn('transaction_status', ['settlement', 'capture']);
+            })
+            ->sum('qty');
+
+        $jumlahPelanggan = (clone $base)
+            ->whereNotNull('user_id')
+            ->distinct('user_id')
+            ->count('user_id');
+
+        $pdf = Pdf::loadView('pages.laporan.pdf', compact(
+            'transactions',
+            'start',
+            'end',
+            'totalPesanan',
+            'totalPendapatan',
+            'produkTerjual',
+            'jumlahPelanggan'
+        ))->setPaper('A4', 'portrait');
+
+        return $pdf->download("laporan-penjualan_{$start}_sd_{$end}.pdf");
+        // kalau mau langsung tampil di tab baru:
+        // return $pdf->stream("laporan-penjualan_{$start}_sd_{$end}.pdf");
+    }
+
 }

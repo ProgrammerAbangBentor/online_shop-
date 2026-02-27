@@ -36,4 +36,13 @@ class ProductCatalogController extends Controller
         $product = Product::with('category')->findOrFail($id);
         return view('pages.shop.products.show', compact('product'));
     }
+
+    public function dashboard()
+    {
+        $produkUnggulan = \App\Models\Product::latest()
+                            ->take(6)
+                            ->get();
+
+        return view('pages.shop.dashboard', compact('produkUnggulan'));
+    }
 }

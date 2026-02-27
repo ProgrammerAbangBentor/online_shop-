@@ -326,13 +326,15 @@
                 </div>
 
                 <div class="right">
-                  {{-- button export (sementara dummy) --}}
-                  <button type="button" class="btn btn-soft-light">
-                    <i class="fas fa-file-excel mr-1"></i> Export Excel
-                  </button>
-                  <button type="button" class="btn btn-soft-light">
-                    <i class="fas fa-file-pdf mr-1"></i> Cetak PDF
-                  </button>
+                    <a class="btn btn-soft-light"
+                        href="{{ route('laporan.export.excel', request()->only(['start_date','end_date'])) }}">
+                        <i class="fas fa-file-excel mr-1"></i> Export Excel
+                    </a>
+
+                    <a class="btn btn-soft-light" target="_blank"
+                        href="{{ route('laporan.export.pdf', request()->only(['start_date','end_date'])) }}">
+                        <i class="fas fa-file-pdf mr-1"></i> Cetak PDF
+                    </a>
                 </div>
               </form>
 
